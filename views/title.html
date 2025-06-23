@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>H2O</title>
+
+    <script src="/assets/js/tailwindcss.min.js"></script>
+    <script src="/assets/js/loader.min.js"></script>
+</head>
+<body class="bg-gray-50">
+
+    <header>
+        <nav class="bg-gray-900 text-white sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a class="text-xl font-bold" href="#">H2O</a>
+                    <button class="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" type="button" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <div class="hidden md:block" id="navbarCollapse">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a class="bg-gray-800 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page" href="/">Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
+            <div class="w-full">
+                {{ if ne .icon "" }}
+                <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <img class="w-16 h-16 object-cover" src="{{ .icon }}" alt="">
+                        </div>
+                        <div class="flex-1 p-4">
+                            <blockquote class="text-lg font-medium text-gray-900 mb-0">
+                                {{ .title }}
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+
+                {{ if eq .mode "comics" }}
+                <div class="bg-white rounded-lg shadow-md" style="z-index: 0">
+                    {{ range $i, $item := .items }}
+                        <a href="{{ $item.url }}" class="block p-4 text-lg font-medium text-gray-900 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0" aria-current="true">
+                            Chapter {{ $item.name }}
+                        </a>
+                    {{ end }}
+                </div>
+                {{ else }}
+                    <!-- Loading Skeleton -->
+                    <div id="loadingSkeleton" class="columns-1 md:columns-3 lg:columns-4 gap-4 mb-6">
+                        {{ range $i, $item := .items }}
+                            <div class="break-inside-avoid mb-4">
+                                <div class="w-full h-64 bg-gray-200 rounded-lg animate-pulse"></div>
+                            </div>
+                        {{ end }}
+                    </div>
+                    
+                    <!-- Actual Images (hidden initially) -->
+                    <div id="imageGrid" class="columns-1 md:columns-3 lg:columns-4 gap-4 mb-6 hidden">
+                        {{ range $i, $item := .items }}
+                            <div class="break-inside-avoid mb-4">
+                                <img src="{{ $item.url }}" class="w-full h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity duration-200" alt="{{ $item.name }}" onclick="openModal('{{ $item.url }}', '{{ $item.name }}')" onload="checkAllImagesLoaded()">
+                            </div>
+                        {{ end }}
+                    </div>
+                {{ end }}
+            </div>
+        </div>
+        <div class="fixed bottom-4 right-4 z-50">
+            <a class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-colors duration-200 flex items-center justify-center" href="{{ .back }}">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 32 32" version="1.1">
+                    <path style=" stroke:none;fill-rule:evenodd;fill:rgb(255%,255%,255%);fill-opacity:1;" d="M 16.707031 3.292969 C 16.894531 3.480469 17 3.734375 17 4 C 17 4.265625 16.894531 4.519531 16.707031 4.707031 L 5.414062 16 L 16.707031 27.292969 C 17.097656 27.683594 17.097656 28.316406 16.707031 28.707031 C 16.316406 29.097656 15.683594 29.097656 15.292969 28.707031 L 3.292969 16.707031 C 3.105469 16.519531 3 16.265625 3 16 C 3 15.734375 3.105469 15.480469 3.292969 15.292969 L 15.292969 3.292969 C 15.480469 3.105469 15.734375 3 16 3 C 16.265625 3 16.519531 3.105469 16.707031 3.292969 Z M 16.707031 3.292969 "/>
+                    <path style=" stroke:none;fill-rule:evenodd;fill:rgb(255%,255%,255%);fill-opacity:1;" d="M 24.707031 3.292969 C 24.894531 3.480469 25 3.734375 25 4 C 25 4.265625 24.894531 4.519531 24.707031 4.707031 L 13.414062 16 L 24.707031 27.292969 C 25.097656 27.683594 25.097656 28.316406 24.707031 28.707031 C 24.316406 29.097656 23.683594 29.097656 23.292969 28.707031 L 11.292969 16.707031 C 11.105469 16.519531 11 16.265625 11 16 C 11 15.734375 11.105469 15.480469 11.292969 15.292969 L 23.292969 3.292969 C 23.480469 3.105469 23.734375 3 24 3 C 24.265625 3 24.519531 3.105469 24.707031 3.292969 Z M 24.707031 3.292969 "/>
+                </svg>
+            </a>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-gray-300 text-4xl font-bold z-10 pointer-events-auto">
+                &times;
+            </button>
+            <img id="modalImage" src="" alt="" class="max-h-full max-w-full object-contain rounded-lg pointer-events-auto">
+        </div>
+    </div>
+    
+    <script src="/assets/js/modal.min.js"></script>
+</body>
+</html>
