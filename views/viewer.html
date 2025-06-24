@@ -33,30 +33,16 @@
     <main>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
             <div class="w-full">
-                {{ if ne .icon "" }}
-                <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <img class="w-16 h-16 object-cover" src="{{ .icon }}" alt="">
-                        </div>
-                        <div class="flex-1 p-4">
-                            <blockquote class="text-lg font-medium text-gray-900 mb-0">
-                                {{ .title }}
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-                {{ end }}
-
-                <div class="bg-white rounded-lg shadow-md" style="z-index: 0">
+                <div class="columns-1 md:columns-3 lg:columns-4 gap-4 mb-6">
                     {{ range $i, $item := .items }}
-                        <a href="{{ $item.url }}" class="block p-4 text-lg font-medium text-gray-900 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0" aria-current="true">
-                            Chapter {{ $item.name }}
-                        </a>
+                        <div class="break-inside-avoid mb-4">
+                            <img src="{{ $item.url }}" class="w-full h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity duration-200" alt="{{ $item.name }}" onclick="openModal('{{ $item.url }}', '{{ $item.name }}')">
+                        </div>
                     {{ end }}
                 </div>
             </div>
         </div>
+
         <div class="fixed bottom-4 right-4 z-50">
             <a class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-colors duration-200 flex items-center justify-center" href="{{ .back }}">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 32 32" version="1.1">
@@ -67,5 +53,16 @@
         </div>
     </main>
 
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-gray-300 text-4xl font-bold z-10 pointer-events-auto">
+                &times;
+            </button>
+            <img id="modalImage" src="" alt="" class="max-h-full max-w-full object-contain rounded-lg pointer-events-auto">
+        </div>
+    </div>
+    
+    <script src="/assets/js/modal.min.js"></script>
 </body>
 </html> 

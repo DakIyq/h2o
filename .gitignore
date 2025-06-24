@@ -17,6 +17,7 @@
 *.gz
 *.bz2
 
+tmp
 views/comics/*
 !views/comics/.gitignore
 views/images/*
